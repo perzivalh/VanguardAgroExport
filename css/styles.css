@@ -146,9 +146,12 @@ button {
     width: auto;
 }
 
-.header-contact {
+/* .header-contact removed/refactored */
+
+.header-right {
     display: flex;
     align-items: center;
+    gap: 1.5rem;
 }
 
 .btn-contactanos {
@@ -163,6 +166,7 @@ button {
     border-radius: var(--radius-sm);
     transition: all var(--transition-normal);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    white-space: nowrap;
 }
 
 .btn-contactanos:hover {
@@ -172,15 +176,128 @@ button {
     box-shadow: 0 4px 12px rgba(232, 217, 109, 0.4);
 }
 
-.contactanos-img {
+.header-contact-icon {
+    display: none;
+    /* Hidden on desktop by default */
+    align-items: center;
+    justify-content: center;
+    color: var(--color-white);
+    background-color: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 40px;
     height: 40px;
-    width: auto;
-    cursor: pointer;
-    transition: transform var(--transition-normal);
+    transition: all var(--transition-normal);
 }
 
-.contactanos-img:hover {
-    transform: scale(1.05);
+.header-contact-icon:hover {
+    background-color: var(--color-white);
+    color: var(--color-primary);
+    transform: scale(1.1);
+}
+
+/* Responsive Visibility Helpers */
+.desktop-only {
+    display: inline-block;
+}
+
+.mobile-only {
+    display: none;
+}
+
+/* Side Menu Overlay */
+.side-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-normal);
+    backdrop-filter: blur(3px);
+}
+
+.side-menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Side Menu Drawer */
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    /* Hidden by default */
+    width: 300px;
+    height: 100vh;
+    background-color: #d9d5c8;
+    z-index: 1100;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.side-menu.active {
+    right: 0;
+}
+
+.side-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.side-menu-logo img {
+    height: 40px;
+}
+
+.close-menu {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.close-menu:hover {
+    background-color: #f0f0f0;
+}
+
+.side-menu-list {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+}
+
+.side-nav-link {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    padding: 0.8rem 0;
+    display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: color 0.2s;
+}
+
+.side-nav-link:hover {
+    color: var(--color-primary);
+    padding-left: 5px;
+}
+
+.side-nav-link.highlight {
+    color: var(--color-primary);
+    font-weight: 700;
 }
 
 /* Secondary Navigation Bar */
@@ -249,12 +366,13 @@ button {
     padding: 0.5rem;
 }
 
+/* .hamburger styles updated in header */
 .hamburger span {
     width: 28px;
     height: 3px;
     background-color: var(--color-white);
     border-radius: 2px;
-    transition: all var(--transition-normal);
+    /* transition removed here - handled by toggle logic but keeping basic shape */
 }
 
 /* ===== HERO SECTION ===== */
@@ -783,23 +901,36 @@ button {
         gap: var(--spacing-sm);
     }
 
-    .logo {
-        order: 2;
-        flex: 1;
-        display: flex;
-        justify-content: center;
+    /* Mobile Visibility Overrides */
+    .desktop-only {
+        display: none !important;
     }
 
-    .header-contact {
-        order: 3;
+    .mobile-only {
+        display: flex !important;
     }
+
+    .header-contact-icon {
+        display: flex;
+        /* Ensure it is visible on mobile */
+    }
+
+    .logo {
+        /* Remove order/flex overrides from previous mobile layout if any */
+        display: flex;
+        justify-content: flex-start;
+        /* Logo left */
+    }
+
+    /* .header-contact removed */
 
     .hamburger {
-        order: 1;
-        margin-right: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         width: 28px;
         height: 28px;
-        gap: 4px;
+        gap: 5px;
     }
 
     .hamburger span {
@@ -841,6 +972,48 @@ button {
 
     .nav-secondary {
         padding: 0;
+        margin: 0;
+    }
+
+    /* Secondary Nav 2x2 Grid */
+    .secondary-nav-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        width: 100% !important;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+
+    .secondary-nav-item {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 2rem 1rem !important;
+        text-align: center !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.15);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        width: auto !important;
+        height: 100% !important;
+    }
+
+    /* Remove borders for grid alignment (2 columns) */
+    .secondary-nav-item:nth-child(2n) {
+        border-right: none !important;
+    }
+
+    /* Remove bottom border from last 2 items (in case of 4 items) 
+       or just the last row. Using logic for 4 items specifically: */
+    .secondary-nav-item:nth-child(3),
+    .secondary-nav-item:nth-child(4) {
+        border-bottom: none !important;
+    }
+
+    .secondary-nav-item span {
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+        white-space: normal;
+        line-height: 1.2;
     }
 
     /* Hero */

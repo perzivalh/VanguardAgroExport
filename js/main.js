@@ -4,27 +4,52 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ===== MOBILE MENU TOGGLE =====
+    // ===== SIDE MENU TOGGLE =====
     const hamburger = document.getElementById('hamburger');
-    const nav = document.querySelector('.nav-secondary');
+    const sideMenu = document.getElementById('sideMenu');
+    const sideMenuOverlay = document.getElementById('sideMenuOverlay');
+    const closeMenuBtn = document.getElementById('closeMenu');
 
-    if (hamburger && nav) {
-        hamburger.addEventListener('click', function () {
-            nav.classList.toggle('active');
+    function openMenu() {
+        sideMenu.classList.add('active');
+        sideMenuOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    }
 
-            // Animate hamburger to X
-            const spans = hamburger.querySelectorAll('span');
-            if (nav.classList.contains('active')) {
-                spans[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
-                spans[1].style.opacity = '0';
-                spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
-            } else {
-                spans[0].style.transform = 'none';
-                spans[1].style.opacity = '1';
-                spans[2].style.transform = 'none';
-            }
+    function closeMenu() {
+        sideMenu.classList.remove('active');
+        sideMenuOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+
+        // Reset hamburger if it has animation
+        const spans = hamburger.querySelectorAll('span');
+        if (spans.length === 3) {
+            spans[0].style.transform = 'none';
+            spans[1].style.opacity = '1';
+            spans[2].style.transform = 'none';
+        }
+    }
+
+    if (hamburger) {
+        hamburger.addEventListener('click', function (e) {
+            e.stopPropagation();
+            openMenu();
         });
     }
+
+    if (closeMenuBtn) {
+        closeMenuBtn.addEventListener('click', closeMenu);
+    }
+
+    if (sideMenuOverlay) {
+        sideMenuOverlay.addEventListener('click', closeMenu);
+    }
+
+    // Close menu when clicking links
+    const sideNavLinks = document.querySelectorAll('.side-nav-link');
+    sideNavLinks.forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
 
     // ===== SMOOTH SCROLL FOR NAVIGATION LINKS =====
     const navLinks = document.querySelectorAll('.nav-link, .secondary-nav-item');
